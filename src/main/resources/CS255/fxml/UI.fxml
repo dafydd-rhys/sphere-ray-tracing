@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.net.URL?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+
+<GridPane alignment="CENTER" prefHeight="480" prefWidth="640.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cs230.viewController.MainMenuController">
+    <columnConstraints>
+      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="60" prefWidth="100.0" />
+      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="40" prefWidth="100.0" />
+    </columnConstraints>
+    <rowConstraints>
+      <RowConstraints minHeight="10.0" percentHeight="100" prefHeight="30.0" vgrow="SOMETIMES" />
+    </rowConstraints>
+    <Pane GridPane.columnIndex="0">
+
+        <ImageView fx:id="mainMenuImage" GridPane.columnIndex="0">
+            <image>
+                <Image url="@../images/jewels.png" />
+
+            </image>
+        </ImageView>
+        <VBox fx:id="motdPane" prefWidth="384" VBox.vgrow="ALWAYS">
+            <padding>
+                <Insets bottom="10" left="10" right="10" top="10" />
+            </padding>
+            <Label fx:id="motd" text="%messageOfTheDay" />
+            <Label fx:id="motdText" maxWidth="350" text="Message of the Day" textOverrun="CLIP" wrapText="true" />
+        </VBox>
+    </Pane>
+
+   <Pane fx:id="optionsBackgroundPane" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" />
+   <VBox alignment="CENTER" prefHeight="450" spacing="10" GridPane.columnIndex="1">
+       <padding>
+
+       </padding>
+      <children>
+         <Label fx:id="titleText" text="Title Text" textFill="#000000de">
+            <padding>
+               <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+            </padding>
+         </Label>
+         <Button fx:id="newGameButton" minWidth="150.0" mnemonicParsing="true" onAction="#onNewGameButtonClick" text="%newGame" />
+         <Button fx:id="continueGameButton" defaultButton="true" minWidth="150.0" mnemonicParsing="true" text="%continueGame" />
+         <Button fx:id="settingsButton" minWidth="150.0" mnemonicParsing="true" onAction="#onSettingsButtonClick" text="%settings" />
+         <Button fx:id="exitButton" cancelButton="true" minWidth="150.0" mnemonicParsing="true" onAction="#onExitButtonClick" text="%exit" />
+         <Label fx:id="currentProfileLabel" text="%noProfileSelected" textAlignment="CENTER" textFill="#00000099" />
+          <Button fx:id="manageProfilesButton" minWidth="150.0" mnemonicParsing="true" onAction="#onManageProfilesButtonClick" text="%manageProfiles" />
+         <Label fx:id="descriptionLabel" text="%description" textAlignment="CENTER" textFill="#00000099" wrapText="true">
+            <padding>
+               <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+            </padding></Label>
+      </children></VBox>
+
+
+    <stylesheets>
+        <URL value="@../css/application.css" />
+        <URL value="@../css/main-menu.css" />
+    </stylesheets>
+</GridPane>
