@@ -1,4 +1,4 @@
-package CS255;
+package sphere_image_manipulation;
 
 import javafx.application.Application;
 import javafx.scene.Scene;

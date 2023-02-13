@@ -1,4 +1,4 @@
-package CS255.Controller;
+package sphere_image_manipulation.Controller;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;

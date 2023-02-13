@@ -1,2 +1,0 @@
-# sphere-image-manipulation
- 

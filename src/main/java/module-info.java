@@ -3,8 +3,8 @@ module com.example.cs255 {
     requires javafx.fxml;
 
 
-    opens CS255 to javafx.fxml;
-    exports CS255;
-    exports CS255.Controller;
-    opens CS255.Controller to javafx.fxml;
+    opens sphere_image_manipulation to javafx.fxml;
+    exports sphere_image_manipulation;
+    exports sphere_image_manipulation.Controller;
+    opens sphere_image_manipulation.Controller to javafx.fxml;
 }
