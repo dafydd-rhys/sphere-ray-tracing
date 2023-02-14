@@ -1,6 +1,7 @@
-package sphere_image_manipulation;
+package cs255;
 
 public class Vector {
+
     private double x;
     private double y;
     private double z;
@@ -8,10 +9,10 @@ public class Vector {
     public Vector() {
     }
 
-    public Vector(double i, double j, double k) {
-        x = i;
-        y = j;
-        z = k;
+    public Vector(double vectorX, double vectorY, double vectorZ) {
+        x = vectorX;
+        y = vectorY;
+        z = vectorZ;
     }
 
     public double magnitude() {
@@ -19,11 +20,11 @@ public class Vector {
     }
 
     public void normalise() {
-        double mag = magnitude();
-        if (mag != 0) {
-            x /= mag;
-            y /= mag;
-            z /= mag;
+        double magnitude = magnitude();
+        if (magnitude != 0) {
+            x /= magnitude;
+            y /= magnitude;
+            z /= magnitude;
         }
     }
 
@@ -68,7 +69,7 @@ public class Vector {
     }
 
     public void print() {
-        System.out.println("x=" + x + ", y=" + y + ", z=" + z);
+        System.out.println("x = " + x + ", y = " + y + ", z = " + z);
     }
 }
 
