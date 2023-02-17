@@ -15,19 +15,6 @@ public class Vector {
         z = vectorZ;
     }
 
-    public double magnitude() {
-        return Math.sqrt(x * x + y * y + z * z);
-    }
-
-    public void normalise() {
-        double magnitude = magnitude();
-        if (magnitude != 0) {
-            x /= magnitude;
-            y /= magnitude;
-            z /= magnitude;
-        }
-    }
-
     public double dot(Vector a) {
         return x * a.x + y * a.y + z * a.z;
     }
@@ -44,32 +31,41 @@ public class Vector {
         return new Vector(d * x, d * y, d * z);
     }
 
-    public void setX(double x) {
-        this.x = x;
-    }
-
     public double getX() {
         return x;
-    }
-
-    public void setY(double y) {
-        this.y = y;
     }
 
     public double getY() {
         return y;
     }
 
-    public void setZ(double z) {
-        this.z = z;
-    }
-
     public double getZ() {
         return z;
     }
 
-    public void print() {
-        System.out.println("x = " + x + ", y = " + y + ", z = " + z);
+    public Vector neg() {
+        return new Vector(-x, -y, -z);
     }
+
+    public Vector normalize() {
+        double magnitude = Math.sqrt(x * x + y * y + z * z);
+        if (magnitude == 0) {
+            return new Vector(0, 0, 0);
+        }
+        double newX = x / magnitude;
+        double newY = y / magnitude;
+        double newZ = z / magnitude;
+
+        return new Vector(newX, newY, newZ);
+    }
+
+    public double distance(Vector other) {
+        double dx = this.x - other.x;
+        double dy = this.y - other.y;
+        double dz = this.z - other.z;
+
+        return Math.sqrt(dx * dx + dy * dy + dz * dz);
+    }
+
 }
 
