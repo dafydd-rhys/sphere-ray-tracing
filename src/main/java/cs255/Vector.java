@@ -10,9 +10,9 @@ public class Vector {
     }
 
     public Vector(double vectorX, double vectorY, double vectorZ) {
-        x = vectorX;
-        y = vectorY;
-        z = vectorZ;
+        this.x = vectorX;
+        this.y = vectorY;
+        this.z = vectorZ;
     }
 
     public double dot(Vector a) {
@@ -31,6 +31,14 @@ public class Vector {
         return new Vector(d * x, d * y, d * z);
     }
 
+    public Vector neg() {
+        return new Vector(-x, -y, -z);
+    }
+
+    public Vector cross(Vector v2) {
+        return new Vector(y*v2.z-z*v2.y, z*v2.x-x*v2.z, x*v2.y-y*v2.x);
+    }
+
     public double getX() {
         return x;
     }
@@ -43,20 +51,13 @@ public class Vector {
         return z;
     }
 
-    public Vector neg() {
-        return new Vector(-x, -y, -z);
-    }
-
     public Vector normalize() {
         double magnitude = Math.sqrt(x * x + y * y + z * z);
         if (magnitude == 0) {
             return new Vector(0, 0, 0);
         }
-        double newX = x / magnitude;
-        double newY = y / magnitude;
-        double newZ = z / magnitude;
 
-        return new Vector(newX, newY, newZ);
+        return new Vector(x / magnitude, y / magnitude, z / magnitude);
     }
 
     public double distance(Vector other) {
@@ -67,5 +68,20 @@ public class Vector {
         return Math.sqrt(dx * dx + dy * dy + dz * dz);
     }
 
+    public Vector rotateX(double angle) {
+        double cosTheta = Math.cos(Math.toRadians(angle));
+        double sinTheta = Math.sin(Math.toRadians(angle));
+
+        return new Vector(x, (y * cosTheta) - (z * sinTheta), (y * sinTheta) + (z * cosTheta));
+    }
+
+    public Vector rotateY(double angle) {
+        double cosTheta = Math.cos(Math.toRadians(angle));
+        double sinTheta = Math.sin(Math.toRadians(angle));
+
+        return new Vector((x * cosTheta) + (z * sinTheta), y, (-x * sinTheta) + (z * cosTheta));
+    }
+
 }
+
 

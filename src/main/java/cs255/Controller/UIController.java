@@ -1,9 +1,9 @@
 package cs255.Controller;
 
-import cs255.Camera;
-import cs255.LightSource;
-import cs255.Sphere;
-import cs255.Vector;
+import cs255.*;
+import cs255.Object.Camera;
+import cs255.Object.LightSource;
+import cs255.Object.Sphere;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Slider;
@@ -40,18 +40,22 @@ public class UIController implements Initializable {
     @FXML
     private Slider cameraAltitude;
 
-    private Camera camera;
-    private final LightSource light = new LightSource(0, 0, 0);
+    private final LightSource light = new LightSource(0, 0, -1500);
     private final ArrayList<Sphere> spheres = new ArrayList<>();
+    private Camera camera;
     private Sphere selectedSphere;
+    private final int MAX_RGB = 255;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        spheres.add(new Sphere(100, 0, 0, -250, 1, 0, 0));
-        spheres.add(new Sphere(100, 10, 30, 0, 0, 1, 0));
-        spheres.add(new Sphere(100, 20, 60, 250, 0, 0, 1));
+        spheres.add(new Sphere(150, 0, 0, 0, 1, 0, 0.5));
+        spheres.add(new Sphere(75, 0, 0, 300, 1, 0, 0.5));
+        spheres.add(new Sphere(50, 0, 0, -300, 1, 0.5, 0.5));
+        //spheres.add(new Sphere(100, 200, 200, 0, 0, 1, 0));
+        //spheres.add(new Sphere(100, -200, -200, -200, 0, 0, 1));
+
         backgroundSlider.maxProperty().setValue(spheres.size());
-        selectedSphere = spheres.get(0);
+        if (spheres.size() > 0) selectedSphere = spheres.get(0);
         setSphereAttributes();
 
         //Creates an image we can write too
@@ -60,46 +64,42 @@ public class UIController implements Initializable {
         environment.setImage(environmentScene);
         initializeListeners(environmentScene);
 
-        Vector cameraPosition = new Vector(0, 0, -500);
-        Vector cameraDirection = new Vector(0, 0, 1);
-        camera = new Camera(cameraPosition, cameraDirection);
-        updateCamera();
+        camera = new Camera(new Vector(0, 0, 0), new Vector(0, 0, 1),
+                0, 0, 60);
 
         // Render the scene
         render(environmentScene);
     }
 
     public void render(WritableImage image) {
-        debug();
         PixelWriter pixelWriter = image.getPixelWriter();
-
-        // Set the ambient light color and intensity
-        Color ambientLight = new Color(0.2, 0.2, 0.2, 1.0);
-        double shininess = 50;
 
         for (int i = 0; i < image.getHeight(); i++) {
             for (int j = 0; j < image.getWidth(); j++) {
                 // Initialize the closest intersection distance and sphere to null
                 double closestIntersection = Double.MAX_VALUE;
                 Sphere closestSphere = null;
-                Vector cameraRelative = new Vector(j, i, -500);
+
+                // Calculate the direction vector for the current pixel
+                Vector direction = new Vector(j - image.getWidth() / 2.0, i - image.getHeight() / 2.0,
+                        image.getWidth() / (2.0 * Math.tan(Math.toRadians(camera.getFOV() / 2.0)))).normalize();
+                direction = direction.rotateX(camera.getAltitude());
+                direction = direction.rotateY(camera.getAzimuth());
 
                 // Check each sphere for intersection
                 for (Sphere sphere : spheres) {
-                    Vector vectorFromCentreToOrigin = cameraRelative.sub(sphere.getCentre());
+                    Vector vectorFromCentreToOrigin = camera.getPosition().sub(sphere.getCentre());
 
-                    double rayA = camera.getDirection().dot(camera.getDirection());
-                    double rayB = 2 * vectorFromCentreToOrigin.dot(camera.getDirection());
-                    double rayC = vectorFromCentreToOrigin.dot(vectorFromCentreToOrigin) -
-                            sphere.getRadius() * sphere.getRadius();
-
+                    double rayA = direction.dot(direction);
+                    double rayB = 2 * vectorFromCentreToOrigin.dot(direction);
+                    double rayC = vectorFromCentreToOrigin.dot(vectorFromCentreToOrigin) - sphere.getRadius() * sphere.getRadius();
                     double disc = rayB * rayB - 4 * rayA * rayC;
 
                     // Check for intersection
                     if (disc >= 0) {
                         double solvedIntersection = (-rayB - Math.sqrt(disc)) / (2 * rayA);
-                        Vector pointOfIntersection = cameraRelative.add(camera.getDirection().mul(solvedIntersection));
-                        double distanceToIntersection = cameraRelative.distance(pointOfIntersection);
+                        Vector pointOfIntersection = camera.getPosition().add(direction.mul(solvedIntersection));
+                        double distanceToIntersection = camera.getPosition().distance(pointOfIntersection);
 
                         // Update the closest intersection and sphere
                         if (distanceToIntersection < closestIntersection) {
@@ -111,14 +111,19 @@ public class UIController implements Initializable {
 
                 // If there was an intersection, calculate the color for the pixel
                 if (closestSphere != null) {
-                    Vector pointOfIntersection = cameraRelative.add(camera.getDirection().mul(closestIntersection));
+                    Vector pointOfIntersection = camera.getPosition().add(direction.mul(closestIntersection));
                     Vector temp = light.getPosition().sub(pointOfIntersection).normalize();
                     Vector surfaceNormal = pointOfIntersection.sub(closestSphere.getCentre()).normalize();
+
+                    // Set the ambient light color and intensity
+                    double shininess = 50;
+                    double intensity = 0.3;
+                    Color ambientLight = new Color(intensity, intensity, intensity, 1);
 
                     // Calculate ambient shading
                     double red = ambientLight.getRed() * closestSphere.getRed();
                     double green = ambientLight.getGreen() * closestSphere.getGreen();
-                    double blue = ambientLight.getBlue() * closestSphere.getBlue();
+                    double blue =  ambientLight.getBlue() * closestSphere.getBlue();
 
                     // Calculate diffuse shading
                     double dotProduct = temp.dot(surfaceNormal);
@@ -130,16 +135,10 @@ public class UIController implements Initializable {
 
                     // Calculate specular shading
                     Vector reflectDir = surfaceNormal.mul(2.0 * dotProduct).sub(temp);
-                    double specIntensity = Math.pow(Math.max(reflectDir.dot(camera.getDirection().neg()), 0.0), shininess);
-                    red += specIntensity;
-                    green += specIntensity;
-                    blue += specIntensity;
+                    double specIntensity = Math.pow(Math.max(reflectDir.dot(direction.neg()), 0.0), shininess);
 
-                    if (red > 1) red = 1;
-                    if (green > 1) green = 1;
-                    if (blue > 1) blue = 1;
-
-                    pixelWriter.setColor(j, i, Color.color(red, green, blue, 1));
+                    pixelWriter.setColor(j, i, Color.color(inRange(red + specIntensity),
+                            inRange(green + specIntensity), inRange(blue + specIntensity), 1));
                 } else {
                     // If there was no intersection, clear the pixel
                     pixelWriter.setColor(j, i, Color.BLACK);
@@ -148,26 +147,25 @@ public class UIController implements Initializable {
         }
     }
 
-    private void updateCamera() {
-        double theta = Math.toRadians(cameraAzimuth.getValue());
-        double phi = Math.toRadians(cameraAltitude.getValue());
-
-        double x = Math.sin(theta) * Math.cos(phi);
-        double y = Math.sin(phi);
-        double z = Math.cos(theta) * Math.cos(phi);
-
-        camera.setDirection(new Vector(x, y, z).neg());
-        camera.setCameraPosition(new Vector(x, y, z).mul(500));
+    double inRange(double value) {
+        return Math.min(Math.max(value, -1), 1);
     }
 
     private void setSphereAttributes() {
-        redSlider.setValue(selectedSphere.getRed() * 255);
-        greenSlider.setValue(selectedSphere.getGreen() * 255);
-        blueSlider.setValue(selectedSphere.getBlue() * 255);
-        sphereXSlider.setValue(selectedSphere.getX() - 500);
-        sphereYSlider.setValue(selectedSphere.getY() - 500);
-        sphereZSlider.setValue(selectedSphere.getZ() + 500);
+        Slider[] sliders = {backgroundSlider, redSlider, greenSlider, blueSlider, sphereXSlider, sphereYSlider,
+                sphereZSlider, sphereRadius, cameraAltitude, cameraAzimuth};
+
+        redSlider.setValue(selectedSphere.getRed() * MAX_RGB);
+        greenSlider.setValue(selectedSphere.getGreen() * MAX_RGB);
+        blueSlider.setValue(selectedSphere.getBlue() * MAX_RGB);
+        sphereXSlider.setValue(selectedSphere.getX());
+        sphereYSlider.setValue(selectedSphere.getY());
+        sphereZSlider.setValue(selectedSphere.getZ());
         sphereRadius.setValue(selectedSphere.getRadius());
+
+        for (Slider slider : sliders) {
+            slider.setStyle("-fx-control-inner-background: #F6726D;");
+        }
     }
 
     private void initializeListeners(WritableImage environmentScene) {
@@ -175,72 +173,48 @@ public class UIController implements Initializable {
             if (newValue.doubleValue() % 1 == 0) {
                 selectedSphere = spheres.get(newValue.intValue() - 1);
                 setSphereAttributes();
+            }
+        });
+        redSlider.valueProperty().addListener((obs, wasChanging, isNowChanging) -> {
+            selectedSphere.setRed(redSlider.getValue() / MAX_RGB);
+            render(environmentScene);
+        });
+        greenSlider.valueProperty().addListener((obs, wasChanging, isNowChanging) -> {
+            selectedSphere.setGreen(greenSlider.getValue() / MAX_RGB);
+            render(environmentScene);
 
-                render(environmentScene);
-            }
         });
-        redSlider.valueChangingProperty().addListener((obs, wasChanging, isNowChanging) -> {
-            if (!isNowChanging) {
-                selectedSphere.setRed(redSlider.getValue() / 255);
-                render(environmentScene);
-            }
+        blueSlider.valueProperty().addListener((obs, wasChanging, isNowChanging) -> {
+            selectedSphere.setBlue(blueSlider.getValue() / MAX_RGB);
+            render(environmentScene);
         });
-        greenSlider.valueChangingProperty().addListener((obs, wasChanging, isNowChanging) -> {
-            if (!isNowChanging) {
-                selectedSphere.setGreen(greenSlider.getValue() / 255);
-                System.out.println(selectedSphere.getX() + " " + selectedSphere.getY() + " " + selectedSphere.getZ());
-                render(environmentScene);
-            }
-        });
-        blueSlider.valueChangingProperty().addListener((obs, wasChanging, isNowChanging) -> {
-            if (!isNowChanging) {
-                selectedSphere.setBlue(blueSlider.getValue() / 255);
-                render(environmentScene);
-            }
-        });
-        sphereXSlider.valueChangingProperty().addListener((obs, wasChanging, isNowChanging) -> {
-            if (!isNowChanging) {
-                selectedSphere.setX(sphereXSlider.getValue());
-                render(environmentScene);
-            }
-        });
-        sphereYSlider.valueChangingProperty().addListener((obs, wasChanging, isNowChanging) -> {
-            if (!isNowChanging) {
-                selectedSphere.setY(sphereYSlider.getValue());
-                render(environmentScene);
-            }
-        });
-        sphereZSlider.valueChangingProperty().addListener((obs, wasChanging, isNowChanging) -> {
-            if (!isNowChanging) {
-                selectedSphere.setZ(sphereZSlider.getValue());
-                render(environmentScene);
-            }
-        });
-        sphereRadius.valueChangingProperty().addListener((obs, wasChanging, isNowChanging) -> {
-            if (!isNowChanging) {
-                selectedSphere.setRadius(sphereRadius.getValue());
-                render(environmentScene);
-            }
-        });
-        cameraAzimuth.valueChangingProperty().addListener((obs, wasChanging, isNowChanging) -> {
-            if (!isNowChanging) {
-                updateCamera();
-                render(environmentScene);
-            }
-        });
-        cameraAltitude.valueChangingProperty().addListener((obs, wasChanging, isNowChanging) -> {
-            if (!isNowChanging) {
-                updateCamera();
-                render(environmentScene);
-            }
-        });
-    }
+        sphereXSlider.valueProperty().addListener((obs, wasChanging, isNowChanging) -> {
+            selectedSphere.setX(sphereXSlider.getValue());
+            render(environmentScene);
 
-    private void debug() {
-        System.out.println("Camera Position: " + camera.getCameraPosition().getX() + ", " +
-        camera.getCameraPosition().getY() + ", " + camera.getCameraPosition().getZ());
-        System.out.println("Camera Direction: " + camera.getDirection().getX() + ", "
-         + camera.getDirection().getY() + ", " + camera.getDirection().getZ());
+        });
+        sphereYSlider.valueProperty().addListener((obs, wasChanging, isNowChanging) -> {
+            selectedSphere.setY(sphereYSlider.getValue());
+            render(environmentScene);
+        });
+        sphereZSlider.valueProperty().addListener((obs, wasChanging, isNowChanging) -> {
+            selectedSphere.setZ(sphereZSlider.getValue());
+            render(environmentScene);
+        });
+        sphereRadius.valueProperty().addListener((obs, wasChanging, isNowChanging) -> {
+            selectedSphere.setRadius(sphereRadius.getValue());
+            render(environmentScene);
+        });
+        cameraAzimuth.valueProperty().addListener((obs, oldVal, newVal) -> {
+            camera.setAzimuth(newVal.doubleValue());
+            camera.setPosition(camera.calculateCameraPosition());
+            render(environmentScene);
+        });
+        cameraAltitude.valueProperty().addListener((obs, oldVal, newVal) -> {
+            camera.setAltitude(newVal.doubleValue());
+            camera.setPosition(camera.calculateCameraPosition());
+            render(environmentScene);
+        });
     }
 
 }

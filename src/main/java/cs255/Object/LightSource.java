@@ -1,4 +1,6 @@
-package cs255;
+package cs255.Object;
+
+import cs255.Vector;
 
 public class LightSource {
 

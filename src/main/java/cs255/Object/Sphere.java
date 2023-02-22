@@ -1,13 +1,13 @@
-package cs255;
+package cs255.Object;
+
+import cs255.Vector;
 
 public class Sphere {
 
     private double radius;
-
     private double x;
     private double y;
     private double z;
-
     private double red;
     private double green;
     private double blue;
@@ -15,11 +15,9 @@ public class Sphere {
     public Sphere(double sphereRadius, double sphereX, double sphereY, double sphereZ,
                   double redValue, double greenValue, double blueValue) {
         this.radius = sphereRadius;
-
-        this.x = sphereX + 500;
-        this.y = -sphereY + 500;
+        this.x = sphereX;
+        this.y = sphereY;
         this.z = sphereZ;
-
         this.red = redValue;
         this.green = greenValue;
         this.blue = blueValue;
@@ -62,7 +60,7 @@ public class Sphere {
     }
 
     public void setX(double x) {
-        this.x = x + 500;
+        this.x = x;
     }
 
     public double getX() {
@@ -70,7 +68,7 @@ public class Sphere {
     }
 
     public void setY(double y) {
-        this.y = y + 500;
+        this.y = y;
     }
 
     public double getY() {
@@ -78,7 +76,7 @@ public class Sphere {
     }
 
     public void setZ(double z) {
-        this.z = z - 500;
+        this.z = z;
     }
 
     public double getZ() {

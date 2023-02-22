@@ -11,15 +11,16 @@ public class InitializeUI extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
-        final String uiURL = System.getProperty("user.dir") + "\\src\\main\\resources\\cs255\\fxml\\UI.fxml";
+        final int spacing = 2;
+        int width = 1310;
+        int height = 1000;
 
+        final String uiURL = System.getProperty("user.dir") + "\\src\\main\\resources\\cs255\\fxml\\UI.fxml";
         FXMLLoader fxmlLoader = new FXMLLoader(new URL("file:///" + uiURL));
 
-        int UI_WINDOW_DIM = 1000;
-        Scene scene = new Scene(fxmlLoader.load(), UI_WINDOW_DIM, UI_WINDOW_DIM);
+        Scene scene = new Scene(fxmlLoader.load(), width + spacing, height + spacing);
         stage.setTitle("Ray Tracing");
         stage.setResizable(false);
-        //stage.setFullScreen(true);
         stage.setMaximized(false);
         stage.setScene(scene);
         stage.setOnCloseRequest(e -> System.exit(1));

@@ -6,4 +6,6 @@ module com.example.cs255 {
     exports cs255;
     exports cs255.Controller;
     opens cs255.Controller to javafx.fxml;
+    exports cs255.Object;
+    opens cs255.Object to javafx.fxml;
 }
