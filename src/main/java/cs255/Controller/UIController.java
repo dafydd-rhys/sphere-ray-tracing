@@ -40,19 +40,19 @@ public class UIController implements Initializable {
     @FXML
     private Slider cameraAltitude;
 
-    private final LightSource light = new LightSource(0, 0, -1500);
+    private final int MAX_RGB = 255;
+    private final LightSource light = new LightSource(-400, 0, -1500);
     private final ArrayList<Sphere> spheres = new ArrayList<>();
     private Camera camera;
     private Sphere selectedSphere;
-    private final int MAX_RGB = 255;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         spheres.add(new Sphere(150, 0, 0, 0, 1, 0, 0.5));
         spheres.add(new Sphere(75, 0, 0, 300, 1, 0, 0.5));
-        spheres.add(new Sphere(50, 0, 0, -300, 1, 0.5, 0.5));
-        //spheres.add(new Sphere(100, 200, 200, 0, 0, 1, 0));
-        //spheres.add(new Sphere(100, -200, -200, -200, 0, 0, 1));
+        spheres.add(new Sphere(50, 0, 100, -300, 1, 0.5, 0.5));
+        spheres.add(new Sphere(100, 200, 200, 0, 0, 1, 0));
+        spheres.add(new Sphere(100, -200, -200, -200, 0, 0, 1));
 
         backgroundSlider.maxProperty().setValue(spheres.size());
         if (spheres.size() > 0) selectedSphere = spheres.get(0);
@@ -155,6 +155,10 @@ public class UIController implements Initializable {
         Slider[] sliders = {backgroundSlider, redSlider, greenSlider, blueSlider, sphereXSlider, sphereYSlider,
                 sphereZSlider, sphereRadius, cameraAltitude, cameraAzimuth};
 
+        for (Slider slider : sliders) {
+            slider.setStyle("-fx-control-inner-background: #F6726D;");
+        }
+
         redSlider.setValue(selectedSphere.getRed() * MAX_RGB);
         greenSlider.setValue(selectedSphere.getGreen() * MAX_RGB);
         blueSlider.setValue(selectedSphere.getBlue() * MAX_RGB);
@@ -162,10 +166,6 @@ public class UIController implements Initializable {
         sphereYSlider.setValue(selectedSphere.getY());
         sphereZSlider.setValue(selectedSphere.getZ());
         sphereRadius.setValue(selectedSphere.getRadius());
-
-        for (Slider slider : sliders) {
-            slider.setStyle("-fx-control-inner-background: #F6726D;");
-        }
     }
 
     private void initializeListeners(WritableImage environmentScene) {
@@ -191,7 +191,6 @@ public class UIController implements Initializable {
         sphereXSlider.valueProperty().addListener((obs, wasChanging, isNowChanging) -> {
             selectedSphere.setX(sphereXSlider.getValue());
             render(environmentScene);
-
         });
         sphereYSlider.valueProperty().addListener((obs, wasChanging, isNowChanging) -> {
             selectedSphere.setY(sphereYSlider.getValue());
@@ -207,12 +206,10 @@ public class UIController implements Initializable {
         });
         cameraAzimuth.valueProperty().addListener((obs, oldVal, newVal) -> {
             camera.setAzimuth(newVal.doubleValue());
-            camera.setPosition(camera.calculateCameraPosition());
             render(environmentScene);
         });
         cameraAltitude.valueProperty().addListener((obs, oldVal, newVal) -> {
             camera.setAltitude(newVal.doubleValue());
-            camera.setPosition(camera.calculateCameraPosition());
             render(environmentScene);
         });
     }

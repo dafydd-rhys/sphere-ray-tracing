@@ -11,9 +11,9 @@ public class InitializeUI extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
-        final int spacing = 2;
         int width = 1310;
         int height = 1000;
+        final int spacing = 2;
 
         final String uiURL = System.getProperty("user.dir") + "\\src\\main\\resources\\cs255\\fxml\\UI.fxml";
         FXMLLoader fxmlLoader = new FXMLLoader(new URL("file:///" + uiURL));

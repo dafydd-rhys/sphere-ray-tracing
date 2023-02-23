@@ -23,64 +23,64 @@ public class Sphere {
         this.blue = blueValue;
     }
 
-    public void setRadius(double radius) {
-        this.radius = radius;
-    }
-
     public double getRadius() {
         return radius;
+    }
+
+    public void setRadius(double radius) {
+        this.radius = radius;
     }
 
     public Vector getCentre() {
         return new Vector(x, y, z);
     }
 
-    public void setRed(double red) {
-        this.red = red;
-    }
-
     public double getRed() {
         return red;
     }
 
-    public void setBlue(double blue) {
-        this.blue = blue;
+    public void setRed(double red) {
+        this.red = red;
     }
 
     public double getBlue() {
         return blue;
     }
 
-    public void setGreen(double green) {
-        this.green = green;
+    public void setBlue(double blue) {
+        this.blue = blue;
     }
 
     public double getGreen() {
         return green;
     }
 
-    public void setX(double x) {
-        this.x = x;
+    public void setGreen(double green) {
+        this.green = green;
     }
 
     public double getX() {
         return x;
     }
 
-    public void setY(double y) {
-        this.y = y;
+    public void setX(double x) {
+        this.x = x;
     }
 
     public double getY() {
         return y;
     }
 
-    public void setZ(double z) {
-        this.z = z;
+    public void setY(double y) {
+        this.y = y;
     }
 
     public double getZ() {
         return z;
+    }
+
+    public void setZ(double z) {
+        this.z = z;
     }
 
 }
