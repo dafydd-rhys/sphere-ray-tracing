@@ -11,8 +11,8 @@ public class Camera {
     private double altitude;
 
     public Camera(Vector position, Vector direction, double azimuth, double altitude, double fov) {
-        this.position = position.add(direction.normalize().mul(-2000.0));
-        this.direction = direction.normalize();
+        this.position = position;
+        this.direction = direction;
         this.azimuth = azimuth;
         this.altitude = altitude;
         this.fov = fov;
@@ -68,6 +68,7 @@ public class Camera {
 
         Vector updatedVector =  new Vector(inRange(sinAzimuth * cosAltitude), inRange(sinAltitude),
                 inRange(cosAzimuth * cosAltitude));
+
         this.direction = updatedVector;
         this.position = updatedVector.mul(-2000);
     }

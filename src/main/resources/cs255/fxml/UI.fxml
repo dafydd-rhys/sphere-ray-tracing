@@ -33,5 +33,7 @@
       <Label layoutX="18.0" layoutY="407.0" text="Sphere Radius" textFill="WHITE" />
       <Label layoutX="18.0" layoutY="462.0" text="Camera Azimuth" textFill="WHITE" />
       <Label layoutX="18.0" layoutY="517.0" text="Camera Altitude" textFill="WHITE" />
+      <Slider fx:id="cameraFOV" layoutX="11.0" layoutY="590.0" majorTickUnit="30.0" max="90.0" min="45.0" prefHeight="14.0" prefWidth="290.0" showTickLabels="true" showTickMarks="true" value="60.0" />
+      <Label layoutX="17.0" layoutY="573.0" text="Camera FOV" textFill="WHITE" />
    </children>
 </AnchorPane>
