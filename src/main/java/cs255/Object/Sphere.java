@@ -93,6 +93,13 @@ public class Sphere {
         setCentre();
     }
 
+    /**
+     * Checks for intersection with a (this) sphere object
+     *
+     * @param camera camera object
+     * @param direction temporary direction vector based on pixel coords
+     * @return intersection distance, if there is one
+     */
     public double checkForIntersection(Camera camera, Vector direction) {
         Vector vectorFromCentreToOrigin = camera.getPosition().sub(centre);
 
@@ -102,13 +109,13 @@ public class Sphere {
         double rayC = vectorFromCentreToOrigin.dot(vectorFromCentreToOrigin) - radius * radius;
         double disc = rayB * rayB - 4 * rayA * rayC;
 
-        // Check for intersection
+        //checks for intersection
         if (disc >= 0) {
             double solvedIntersection = (-rayB - Math.sqrt(disc)) / (2 * rayA);
             Vector pointOfIntersection = camera.getPosition().add(direction.mul(solvedIntersection));
             double distanceToIntersection = camera.getPosition().distance(pointOfIntersection);
 
-            // Update the closest intersection and sphere
+            //returns intersection distance
             if (distanceToIntersection < maxIntersection) {
                 return distanceToIntersection;
             }
@@ -116,33 +123,40 @@ public class Sphere {
         return maxIntersection;
     }
 
+    /**
+     * This method calculates the color of the pixel that intersects with this sphere,
+     * it applies ambient, diffuse and specular shading.
+     *
+     * @param camera camera object
+     * @param direction temporary direction vector based on pixel coords
+     * @param closestIntersection closest intersection point
+     * @param light light object
+     * @return color of pixel
+     */
     public Color getColor(Camera camera, Vector direction, double closestIntersection, LightSource light) {
         Vector pointOfIntersection = camera.getPosition().add(direction.mul(closestIntersection));
         Vector temp = light.getPosition().sub(pointOfIntersection).normalize();
         Vector surfaceNormal = pointOfIntersection.sub(centre).normalize();
 
-        // Set the ambient light color and intensity
-        double ambientIntensity = 0.2;
-        Color ambientLight = new Color(ambientIntensity, ambientIntensity, ambientIntensity, 1);
+        //ambient shading
+        double redValue = light.getAmbient() * red;
+        double greenValue = light.getAmbient() * green;
+        double blueValue = light.getAmbient() * blue;
 
-        // Calculate ambient shading
-        double redValue = ambientLight.getRed() * red;
-        double greenValue = ambientLight.getGreen() * green;
-        double blueValue = ambientLight.getBlue() * blue;
-
-        // Calculate diffuse shading
+        //diffuse shading
         double dotProduct = temp.dot(surfaceNormal);
         if (dotProduct > 0) {
-            redValue += dotProduct * red;
-            greenValue += dotProduct * green;
-            blueValue += dotProduct * blue;
+            double dp = dotProduct + light.getDiffuse();
+
+            redValue += dp * red;
+            greenValue += dp * green;
+            blueValue += dp * blue;
         }
 
-        // Calculate specular shading
-        double specularShininess = 50;
+        //specular shading
         Vector reflectionDirection = surfaceNormal.mul(2.0 * dotProduct).sub(temp);
         double specularIntensity = Math.pow(Math.max(reflectionDirection.dot(direction.neg()),
-                0.0), specularShininess);
+                0.0), light.getSpecular() + 1);
 
         return Color.color(inRange(redValue + specularIntensity), inRange(greenValue + specularIntensity),
                 inRange(blueValue + specularIntensity), 1);

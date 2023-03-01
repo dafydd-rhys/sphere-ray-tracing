@@ -60,6 +60,10 @@ public class Camera {
         return fov;
     }
 
+    /**
+     * Updates the camera position and direction based on the
+     * current azimuth and altitude.
+     */
     private void updateCamera() {
         double cosAzimuth = Math.cos(Math.toRadians(azimuth));
         double sinAzimuth = Math.sin(Math.toRadians(azimuth));
@@ -73,6 +77,12 @@ public class Camera {
         this.position = updatedVector.mul(-2000);
     }
 
+    /**
+     * ensures that the passed value is between -1 an 1.
+     *
+     * @param value passed value
+     * @return returns the value between -1 and 1
+     */
     double inRange(double value) {
         return Math.min(Math.max(value, -1), 1);
     }

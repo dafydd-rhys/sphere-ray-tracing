@@ -5,6 +5,7 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.text.Font?>
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1002.0" prefWidth="1312.0" style="-fx-background-color: black; -fx-border-color: grey;" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cs255.Controller.UIController">
    <children>
@@ -13,27 +14,54 @@
             <ImageView fx:id="environment" fitHeight="1000.0" fitWidth="1000.0" pickOnBounds="true" preserveRatio="true" BorderPane.alignment="CENTER" />
          </top>
       </BorderPane>
-      <Slider fx:id="backgroundSlider" blockIncrement="1.0" layoutX="11.0" layoutY="40.0" majorTickUnit="1.0" max="1.0" min="1.0" minorTickCount="0" prefHeight="38.0" prefWidth="290.0" showTickLabels="true" showTickMarks="true" snapToTicks="true" />
-      <Slider fx:id="redSlider" layoutX="11.0" layoutY="95.0" max="255.0" prefHeight="14.0" prefWidth="290.0" showTickLabels="true" showTickMarks="true" value="127.5" />
-      <Slider fx:id="greenSlider" layoutX="11.0" layoutY="150.0" max="255.0" prefHeight="14.0" prefWidth="290.0" showTickLabels="true" showTickMarks="true" value="227.5" />
-      <Slider fx:id="blueSlider" layoutX="11.0" layoutY="205.0" max="255.0" prefHeight="14.0" prefWidth="290.0" showTickLabels="true" showTickMarks="true" value="127.5" />
-      <Slider fx:id="sphereXSlider" layoutX="11.0" layoutY="260.0" majorTickUnit="50.0" max="500.0" min="-500.0" prefHeight="14.0" prefWidth="290.0" showTickLabels="true" showTickMarks="true" />
-      <Slider fx:id="sphereYSlider" layoutX="11.0" layoutY="315.0" majorTickUnit="50.0" max="500.0" min="-500.0" prefHeight="14.0" prefWidth="290.0" showTickLabels="true" showTickMarks="true" />
-      <Slider fx:id="sphereZSlider" layoutX="11.0" layoutY="370.0" majorTickUnit="50.0" max="500.0" min="-500.0" prefHeight="14.0" prefWidth="290.0" showTickLabels="true" showTickMarks="true" />
-      <Slider fx:id="sphereRadius" layoutX="11.0" layoutY="425.0" majorTickUnit="40.0" max="400.0" prefHeight="14.0" prefWidth="290.0" showTickLabels="true" showTickMarks="true" value="200.0" />
-      <Slider fx:id="cameraAzimuth" layoutX="11.0" layoutY="480.0" majorTickUnit="40.0" max="360.0" prefHeight="14.0" prefWidth="290.0" showTickLabels="true" showTickMarks="true" />
-      <Slider fx:id="cameraAltitude" layoutX="11.0" layoutY="535.0" majorTickUnit="30.0" max="90.0" min="-90.0" prefHeight="14.0" prefWidth="290.0" showTickLabels="true" showTickMarks="true" />
-      <Label layoutX="18.0" layoutY="22.0" text="Selected Sphere" textFill="WHITE" />
-      <Label layoutX="18.0" layoutY="77.0" text="Red (R, G, B)" textFill="WHITE" />
-      <Label layoutX="18.0" layoutY="132.0" text="Green (R, G, B)" textFill="WHITE" />
-      <Label layoutX="18.0" layoutY="187.0" text="Blue (R, G, B)" textFill="WHITE" />
-      <Label layoutX="18.0" layoutY="242.0" text="Sphere X (X, Y, Z)" textFill="WHITE" />
-      <Label layoutX="18.0" layoutY="297.0" text="Sphere Y (X, Y, Z)" textFill="WHITE" />
-      <Label layoutX="18.0" layoutY="352.0" text="Sphere Z (X, Y, Z)" textFill="WHITE" />
-      <Label layoutX="18.0" layoutY="407.0" text="Sphere Radius" textFill="WHITE" />
-      <Label layoutX="18.0" layoutY="462.0" text="Camera Azimuth" textFill="WHITE" />
-      <Label layoutX="18.0" layoutY="517.0" text="Camera Altitude" textFill="WHITE" />
-      <Slider fx:id="cameraFOV" layoutX="11.0" layoutY="590.0" majorTickUnit="30.0" max="90.0" min="45.0" prefHeight="14.0" prefWidth="290.0" showTickLabels="true" showTickMarks="true" value="60.0" />
-      <Label layoutX="17.0" layoutY="573.0" text="Camera FOV" textFill="WHITE" />
+      <Slider fx:id="backgroundSlider" blockIncrement="1.0" layoutX="11.0" layoutY="45.0" majorTickUnit="1.0" max="1.0" min="1.0" minorTickCount="0" prefHeight="38.0" prefWidth="290.0" showTickLabels="true" showTickMarks="true" snapToTicks="true" />
+      <Slider fx:id="redSlider" layoutX="11.0" layoutY="100.0" max="255.0" prefHeight="14.0" prefWidth="290.0" showTickLabels="true" showTickMarks="true" value="127.5" />
+      <Slider fx:id="greenSlider" layoutX="11.0" layoutY="155.0" max="255.0" prefHeight="14.0" prefWidth="290.0" showTickLabels="true" showTickMarks="true" value="227.5" />
+      <Slider fx:id="blueSlider" layoutX="11.0" layoutY="210.0" max="255.0" prefHeight="14.0" prefWidth="290.0" showTickLabels="true" showTickMarks="true" value="127.5" />
+      <Slider fx:id="sphereXSlider" layoutX="11.0" layoutY="265.0" majorTickUnit="50.0" max="500.0" min="-500.0" prefHeight="14.0" prefWidth="290.0" showTickLabels="true" showTickMarks="true" />
+      <Slider fx:id="sphereYSlider" layoutX="11.0" layoutY="320.0" majorTickUnit="50.0" max="500.0" min="-500.0" prefHeight="14.0" prefWidth="290.0" showTickLabels="true" showTickMarks="true" />
+      <Slider fx:id="sphereZSlider" layoutX="11.0" layoutY="375.0" majorTickUnit="50.0" max="500.0" min="-500.0" prefHeight="14.0" prefWidth="290.0" showTickLabels="true" showTickMarks="true" />
+      <Slider fx:id="sphereRadius" layoutX="11.0" layoutY="430.0" majorTickUnit="40.0" max="400.0" prefHeight="14.0" prefWidth="290.0" showTickLabels="true" showTickMarks="true" value="200.0" />
+      <Slider fx:id="cameraAzimuth" layoutX="11.0" layoutY="506.0" majorTickUnit="40.0" max="360.0" prefHeight="14.0" prefWidth="290.0" showTickLabels="true" showTickMarks="true" />
+      <Slider fx:id="cameraAltitude" layoutX="11.0" layoutY="561.0" majorTickUnit="30.0" max="90.0" min="-90.0" prefHeight="14.0" prefWidth="290.0" showTickLabels="true" showTickMarks="true" />
+      <Label layoutX="18.0" layoutY="27.0" text="Selected Sphere" textFill="WHITE" />
+      <Label layoutX="18.0" layoutY="82.0" text="Red (R, G, B)" textFill="WHITE" />
+      <Label layoutX="18.0" layoutY="137.0" text="Green (R, G, B)" textFill="WHITE" />
+      <Label layoutX="18.0" layoutY="192.0" text="Blue (R, G, B)" textFill="WHITE" />
+      <Label layoutX="18.0" layoutY="247.0" text="Sphere X (X, Y, Z)" textFill="WHITE" />
+      <Label layoutX="18.0" layoutY="302.0" text="Sphere Y (X, Y, Z)" textFill="WHITE" />
+      <Label layoutX="18.0" layoutY="357.0" text="Sphere Z (X, Y, Z)" textFill="WHITE" />
+      <Label layoutX="18.0" layoutY="412.0" text="Sphere Radius" textFill="WHITE" />
+      <Label layoutX="18.0" layoutY="488.0" text="Camera Azimuth" textFill="WHITE" />
+      <Label layoutX="18.0" layoutY="543.0" text="Camera Altitude" textFill="WHITE" />
+      <Slider fx:id="cameraFOV" layoutX="11.0" layoutY="616.0" majorTickUnit="30.0" max="90.0" min="45.0" prefHeight="14.0" prefWidth="290.0" showTickLabels="true" showTickMarks="true" value="60.0" />
+      <Label layoutX="17.0" layoutY="599.0" text="Camera FOV" textFill="WHITE" />
+      <Label layoutX="128.0" layoutY="7.0" prefHeight="27.0" prefWidth="57.0" text="Sphere" textFill="WHITE">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Label>
+      <Label layoutX="124.0" layoutY="465.0" prefHeight="32.0" prefWidth="66.0" text="Camera" textFill="WHITE">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Label>
+      <Label layoutX="124.0" layoutY="643.0" prefHeight="32.0" prefWidth="66.0" text="Lighting" textFill="WHITE">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Label>
+      <Slider fx:id="lightingX" layoutX="11.0" layoutY="693.0" majorTickUnit="500.0" max="2000.0" min="-2000.0" minorTickCount="1" prefHeight="14.0" prefWidth="290.0" showTickLabels="true" showTickMarks="true" />
+      <Slider fx:id="lightingY" layoutX="11.0" layoutY="748.0" majorTickUnit="500.0" max="2000.0" min="-2000.0" minorTickCount="1" prefHeight="14.0" prefWidth="290.0" showTickLabels="true" showTickMarks="true" />
+      <Label layoutX="18.0" layoutY="675.0" text="Lighting X (X, Y, Z)" textFill="WHITE" />
+      <Label layoutX="18.0" layoutY="730.0" text="Lighting Y (X, Y, Z)" textFill="WHITE" />
+      <Slider fx:id="lightingZ" layoutX="11.0" layoutY="803.0" majorTickUnit="500.0" max="2000.0" min="-2000.0" minorTickCount="1" prefHeight="14.0" prefWidth="290.0" showTickLabels="true" showTickMarks="true" />
+      <Label layoutX="17.0" layoutY="786.0" text="Lighting Z (X, Y, Z)" textFill="WHITE" />
+      <Slider fx:id="ambient" layoutX="11.0" layoutY="855.0" majorTickUnit="0.25" max="1.0" prefHeight="14.0" prefWidth="290.0" showTickLabels="true" showTickMarks="true" value="0.2" />
+      <Slider fx:id="diffuse" layoutX="11.0" layoutY="910.0" majorTickUnit="0.25" max="1.0" prefHeight="14.0" prefWidth="290.0" showTickLabels="true" showTickMarks="true" />
+      <Label layoutX="18.0" layoutY="837.0" text="Ambient Intensity" textFill="WHITE" />
+      <Label layoutX="18.0" layoutY="892.0" text="Diffuse Strength " textFill="WHITE" />
+      <Slider fx:id="specular" layoutX="11.0" layoutY="965.0" minorTickCount="0" prefHeight="14.0" prefWidth="290.0" showTickLabels="true" showTickMarks="true" value="50.0" />
+      <Label layoutX="17.0" layoutY="948.0" text="Specular Shininess" textFill="WHITE" />
    </children>
 </AnchorPane>

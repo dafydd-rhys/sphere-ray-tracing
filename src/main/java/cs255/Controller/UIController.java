@@ -11,6 +11,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.image.PixelWriter;
 import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
+
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
@@ -41,6 +42,18 @@ public class UIController implements Initializable {
     private Slider cameraAltitude;
     @FXML
     private Slider cameraFOV;
+    @FXML
+    private Slider lightingX;
+    @FXML
+    private Slider lightingY;
+    @FXML
+    private Slider lightingZ;
+    @FXML
+    private Slider ambient;
+    @FXML
+    private Slider diffuse;
+    @FXML
+    private Slider specular;
 
     /**
      * Maximum value in r,g,b scale.
@@ -62,6 +75,9 @@ public class UIController implements Initializable {
      * The focused sphere.
      */
     private Sphere selectedSphere;
+
+    private double dragX;
+    private double dragY;
 
     /**
      * This method is run whenever the FXML is initialized, it creates all objects required
@@ -86,7 +102,8 @@ public class UIController implements Initializable {
 
         //adds styling to each slider
         Slider[] sliders = {backgroundSlider, redSlider, greenSlider, blueSlider, sphereXSlider, sphereYSlider,
-                sphereZSlider, sphereRadius, cameraAltitude, cameraAzimuth, cameraFOV};
+                sphereZSlider, sphereRadius, cameraAltitude, cameraAzimuth, cameraFOV, lightingX, lightingY,
+                lightingZ, ambient, diffuse, specular};
         for (Slider slider : sliders) {
             slider.setStyle("-fx-control-inner-background: #F6726D;");
         }
@@ -104,8 +121,10 @@ public class UIController implements Initializable {
         double cameraFOV = 60;
 
         //Initialize camera and light source
-        light = new LightSource(-400, 0, -2000);
+        light = new LightSource(-400, 0, -2000, 0.2, 0, 50);
         camera = new Camera(cameraPosition, cameraDirection, 0, 0, cameraFOV);
+
+        setOtherAttributes(environmentScene);
 
         // Render the scene
         render(environmentScene);
@@ -124,42 +143,73 @@ public class UIController implements Initializable {
         sphereRadius.setValue(selectedSphere.getRadius());
     }
 
+    private void setOtherAttributes(WritableImage environmentScene) {
+        lightingX.setValue(light.getPosition().getX());
+        lightingY.setValue(light.getPosition().getY());
+        lightingZ.setValue(light.getPosition().getZ());
+        ambient.setValue(light.getAmbient());
+        diffuse.setValue(light.getDiffuse());
+        specular.setValue(light.getSpecular());
+
+        environment.setOnMousePressed(mouseEvent -> {
+            dragX = mouseEvent.getX();
+            dragY = mouseEvent.getY();
+        });
+        environment.setOnMouseDragged(mouseEvent -> {
+            double x = Math.min(Math.max(mouseEvent.getX() - dragX, -500), 500) / 2.78;
+            double y = Math.min(Math.max(mouseEvent.getY() - dragY, -500), 500) / 5.56;
+
+            dragX = mouseEvent.getX();
+            dragY = mouseEvent.getY();
+
+            double newX = Math.min(Math.max(camera.getAzimuth() + x, 0), 360);
+            double newY = Math.min(Math.max(camera.getAltitude() + y, -90), 90);
+
+            camera.setAzimuth(newX);
+            cameraAzimuth.setValue(newX);
+            camera.setAltitude(newY);
+            cameraAltitude.setValue(newY);
+
+            render(environmentScene);
+        });
+    }
+
     /**
      * This method renders the UI, it uses the camera position, light position and sphere
      * positions to calculate where they should be in the scene and also implements
      * and calculates different light shadings on the objects. It uses camera rays to
-     * detect intersections with spheres etc. to calculate
+     * detect intersections with spheres, and fires one per person.
      *
      * @param image the UI image being used to render the scene
      */
     public void render(WritableImage image) {
         PixelWriter pixelWriter = image.getPixelWriter();
 
-        //loops through each pixel of image
+        //loops through each pixel of imageView (1000, 1000)
         for (int i = 0; i < image.getHeight(); i++) {
             for (int j = 0; j < image.getWidth(); j++) {
-                // Initialize the closest intersection distance and sphere to null
+                //initialize the closest intersection distance and sphere to null
                 double closestIntersection = Double.MAX_VALUE;
                 Sphere closestSphere = null;
 
-                // Calculate the direction vector for the current pixel
+                //calculates temporary vector for the current pixel
                 Vector direction = new Vector(j - image.getWidth() / 2.0, i - image.getHeight() / 2.0,
                         image.getWidth() / (2.0 * Math.tan(Math.toRadians(camera.getFOV() / 2.0)))).normalize();
                 direction = direction.rotateX(camera.getAltitude());
                 direction = direction.rotateY(camera.getAzimuth());
 
-                // Check each sphere for intersection
+                //checks each sphere for intersection
                 for (Sphere sphere : spheres) {
                     double distanceToIntersection = sphere.checkForIntersection(camera, direction);
 
-                    // Update the closest intersection and sphere
+                    //checks if there is intersection
                     if (distanceToIntersection < closestIntersection) {
                         closestIntersection = distanceToIntersection;
                         closestSphere = sphere;
                     }
                 }
 
-                // If there was an intersection, calculate the color for the pixel, if not, draw pixel black.
+                //if there was an intersection, calculate the color for the pixel, if not, draw pixel black.
                 if (closestSphere != null) {
                     pixelWriter.setColor(j, i, closestSphere.getColor(camera, direction, closestIntersection, light));
                 } else {
@@ -221,6 +271,30 @@ public class UIController implements Initializable {
         });
         cameraFOV.valueProperty().addListener((obs, oldVal, newVal) -> {
             camera.setFOV(newVal.doubleValue());
+            render(environmentScene);
+        });
+        lightingX.valueProperty().addListener((obs, oldVal, newVal) -> {
+            light.setPosition(new Vector(newVal.doubleValue(), light.getPosition().getY(), light.getPosition().getZ()));
+            render(environmentScene);
+        });
+        lightingY.valueProperty().addListener((obs, oldVal, newVal) -> {
+            light.setPosition(new Vector(light.getPosition().getX(), newVal.doubleValue(), light.getPosition().getZ()));
+            render(environmentScene);
+        });
+        lightingZ.valueProperty().addListener((obs, oldVal, newVal) -> {
+            light.setPosition(new Vector(light.getPosition().getX(), light.getPosition().getY(), newVal.doubleValue()));
+            render(environmentScene);
+        });
+        ambient.valueProperty().addListener((obs, oldVal, newVal) -> {
+            light.setAmbient(newVal.doubleValue());
+            render(environmentScene);
+        });
+        diffuse.valueProperty().addListener((obs, oldVal, newVal) -> {
+            light.setDiffuse(newVal.doubleValue());
+            render(environmentScene);
+        });
+        specular.valueProperty().addListener((obs, oldVal, newVal) -> {
+            light.setSpecular(newVal.doubleValue());
             render(environmentScene);
         });
     }
