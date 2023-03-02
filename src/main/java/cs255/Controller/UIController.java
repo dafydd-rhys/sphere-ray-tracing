@@ -11,7 +11,6 @@ import javafx.scene.image.ImageView;
 import javafx.scene.image.PixelWriter;
 import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
-
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
