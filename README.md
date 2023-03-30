@@ -1,2 +1,2 @@
-# sphere-image-manipulation
+# sphere-ray-tracing
  
